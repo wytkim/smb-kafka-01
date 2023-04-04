@@ -25,6 +25,14 @@ dependencies {
 	// json api 
 	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	
+	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'// query logging
+	// apache commons api 
+	implementation 'org.apache.commons:commons-lang3'
+	// logback 배포분기 condition 사용.
+	implementation 'org.codehaus.janino:janino:3.1.2'
+	
+	implementation fileTree(dir: 'libs', include: ['smb-commons2-3.2.2023012901.jar'])
+	
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

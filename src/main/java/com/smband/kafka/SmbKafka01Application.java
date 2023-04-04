@@ -19,6 +19,10 @@ public class SmbKafka01Application {
 	private ApplicationContext appContext;
 	
 	public static void main(String[] args) {
+		// default app mode 설정
+		String serverMode = (String)System.getProperty("server.mode", "debug");
+		System.setProperty("server.mode", serverMode);
+		
 		SpringApplication.run(SmbKafka01Application.class, args);
 	}
 

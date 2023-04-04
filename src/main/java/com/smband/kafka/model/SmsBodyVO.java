@@ -28,6 +28,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class SmsBodyVO {
 	
+	private String from;
+	private String to;
 	private String token;
 	private String message;
 }
