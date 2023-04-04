@@ -23,6 +23,8 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import com.smband.commons.util.StringUtil;
 import com.smband.kafka.model.SmsBodyVO;
@@ -47,8 +49,8 @@ public class SmsSendProdSchedule {
 	
 	@Value("${smband.topics.sms-send-data}")
 	private String smbTopic = "sms-send-data";
-	
-	@Scheduled(fixedRate = 5, initialDelay = 0, timeUnit = TimeUnit.SECONDS)
+	//, timeUnit = TimeUnit.SECONDS
+	@Scheduled(fixedRate = 5000, initialDelay = 0)
 	private void sendSchedule() {
 		//log.info("schedule time: {}", System.currentTimeMillis());
 		sendMessage();
@@ -70,8 +72,24 @@ public class SmsSendProdSchedule {
 				//.setHeader(KafkaHeaders.KEY, key)
 				.build();
 		
+		ListenableFuture<SendResult<String, SmsBodyVO>> future = kafkaTemplate.send(message);
+		future.addCallback(new ListenableFutureCallback<SendResult<String, SmsBodyVO>>() {
+
+			@Override
+			public void onSuccess(SendResult<String, SmsBodyVO> result) {
+				// 성공 처리.
+				log.info("send success: {}", value);
+			}
+
+			@Override
+			public void onFailure(Throwable ex) {
+				// 실패 처리.
+				log.warn("send fail data:{}, exception:{}", value, StringUtil.exceptionMessage(ex));
+			}
+			
+		});
+		/*
 		CompletableFuture<SendResult<String, SmsBodyVO>> future = kafkaTemplate.send(message);
-		//kafkaTemplate.send
 		future.whenComplete((result, ex)->{
 			if(ex==null) {
 				// 성공 처리.
@@ -82,6 +100,7 @@ public class SmsSendProdSchedule {
 				log.warn("send fail data:{}, exception:{}", value, StringUtil.exceptionMessage(ex));
 			}
 		});
+		*/
 	}
 	
 	final String[] messages = {
