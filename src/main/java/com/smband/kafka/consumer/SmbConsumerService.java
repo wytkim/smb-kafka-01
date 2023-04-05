@@ -10,9 +10,6 @@
  */
 package com.smband.kafka.consumer;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
