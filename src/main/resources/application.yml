@@ -21,3 +21,9 @@ smband:
     
 app-scheduler:
   pool-size: 10
+
+app-task-executor:
+  core-pool-size: 8
+  max-pool-size: 16
+  queue-capacity: 8192
+  thread-name-prefix: smb-thread-

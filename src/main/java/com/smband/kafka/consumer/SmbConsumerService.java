@@ -10,11 +10,15 @@
  */
 package com.smband.kafka.consumer;
 
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 import com.smband.kafka.model.SmsBodyVO;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -27,9 +31,11 @@ import lombok.extern.slf4j.Slf4j;
  * @since 
  */
 @Slf4j
+@RequiredArgsConstructor
 @Service
 public class SmbConsumerService {
 	
+	private final SmbAsyncTask asyncTask;
 	//private String groupId = "smb-group";
 	
 	@KafkaListener(topics = {"${smband.topics.users-registrations}"}, groupId = "${smband.kafka.group-id}", containerFactory = "smbKafkaListenerContainerFactory")
@@ -49,9 +55,13 @@ public class SmbConsumerService {
 		//Thread.sleep(4000);
 	}
 	
+	private final AtomicInteger atomicIndex = new AtomicInteger(1);
+	
 	@KafkaListener(topics = {"${smband.topics.sms-send-data}"}, groupId="${smband.kafka.group-id}", containerFactory="smbSendListenerContainerFactory")
-	public void smsConsume(SmsBodyVO smsBody) {
-		
-		log.info("smsConsumer receive body: {}", smsBody);
+	public void smsConsume(List<SmsBodyVO> smsBodyList) throws InterruptedException {
+		log.info("smsConsumer receive body: {}, list size: {}", smsBodyList.get(0), smsBodyList.size());
+		int index = atomicIndex.getAndIncrement();
+		asyncTask.asyncProcess("receive smsBody "+ index);
+		log.info("after async process: "+index);
 	}
 }
