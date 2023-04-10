@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.kafka.core.ConsumerFactory;
 
 //import jakarta.annotation.PostConstruct;
@@ -15,6 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @SpringBootApplication
+@PropertySource(value= {
+		"classpath:property/${server.mode}/jdbc.properties",
+}, encoding="UTF-8")
 public class SmbKafka01Application {
 
 	@Autowired
